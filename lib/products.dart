@@ -25,6 +25,7 @@ class Products extends StatelessWidget {
         itemCount: products.length,
       );
     } else {
+      //productCards = Container();
       productCards = Center(
         child: Text('No products found, please add some.')
       );
