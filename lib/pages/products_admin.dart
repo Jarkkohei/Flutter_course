@@ -3,12 +3,25 @@ import 'package:flutter/material.dart';
 class ProductsAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Manage Products'),
-      ),
-      body: Center(
-        child: Text('Manage your products'),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Manage Products'),
+          bottom: TabBar(tabs: <Widget>[
+            Tab(
+              text: 'Create product',
+              icon: Icon(Icons.create),
+            ),
+            Tab(
+              text: 'My products',
+              icon: Icon(Icons.list),
+            ),
+          ]),
+        ),
+        body: Center(
+          child: Text('Manage your products'),
+        ),
       ),
     );
   }
