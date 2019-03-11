@@ -9,6 +9,22 @@ class ProductsAdmin extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        drawer: Drawer(
+          child: Column(
+            children: <Widget>[
+              AppBar(
+                automaticallyImplyLeading: false,
+                title: Text('Choose'),
+              ),
+              ListTile(
+                title: Text('All products'),
+                onTap: () => {
+                      Navigator.pushReplacementNamed(context, '/'),
+                    },
+              ),
+            ],
+          ),
+        ),
         appBar: AppBar(
           title: Text('Manage Products'),
           bottom: TabBar(tabs: <Widget>[
