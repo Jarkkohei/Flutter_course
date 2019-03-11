@@ -5,13 +5,12 @@ import './pages/auth.dart';
 import './pages/products.dart';
 import './pages/product.dart';
 
-
 void main() {
   //debugPaintSizeEnabled = true;
   //debugPaintBaselinesEnabled = true;
   //debugPaintPointersEnabled = true;
   runApp(MyApp());
-} 
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -40,31 +39,34 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       //debugShowMaterialGrid: true,
       theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepPurpleAccent,
-        primaryColorLight: Colors.white
-      ),
+          brightness: Brightness.light,
+          primarySwatch: Colors.deepOrange,
+          accentColor: Colors.deepPurpleAccent,
+          primaryColorLight: Colors.white),
       //home: AuthPage(),
       routes: {
-        '/': (BuildContext context) => ProductsPage(_products, _addProduct, _deleteProduct),
-        '/admin': (BuildContext context) => ProductsAdmin(), 
+        '/': (BuildContext context) =>
+            ProductsPage(_products, _addProduct, _deleteProduct),
+        '/admin': (BuildContext context) => ProductsAdmin(),
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split('/');
-        if(pathElements[0] != '') {
+        if (pathElements[0] != '') {
           return null;
         }
-        if(pathElements[1] == 'product') {
+        if (pathElements[1] == 'product') {
           final int index = int.parse(pathElements[2]);
           return MaterialPageRoute<bool>(
             builder: (BuildContext context) => ProductPage(
-              _products[index]['title'], 
-              _products[index]['image']),
+                _products[index]['title'], _products[index]['image']),
           );
-        } 
+        }
         return null;
-        
+      },
+      onUnknownRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ProductsPage(_products, _addProduct, _deleteProduct));
       },
     );
   }
