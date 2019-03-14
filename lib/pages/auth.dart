@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
-
   AuthPage();
 
   @override
@@ -22,7 +21,15 @@ class _AuthPageState extends State<AuthPage> {
         title: Text('Login'),
       ),
       body: Container(
-        margin: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5), BlendMode.dstATop),
+            image: AssetImage('assets/background.jpg'),
+          ),
+        ),
+        padding: EdgeInsets.all(10.0),
         child: ListView(
           children: [
             TextField(
@@ -44,13 +51,14 @@ class _AuthPageState extends State<AuthPage> {
               },
             ),
             SwitchListTile(
-              value: _acceptTerms, 
+              value: _acceptTerms,
               onChanged: (bool value) {
                 setState(() {
                   _acceptTerms = value;
                 });
-              }, 
-              title: Text('Accept terms'),),
+              },
+              title: Text('Accept terms'),
+            ),
             SizedBox(height: 10.0),
             RaisedButton(
               color: Theme.of(context).primaryColor,
