@@ -31,11 +31,20 @@ class Products extends StatelessWidget {
                   ),
                   child: Text(
                     '\$ ${products[index]['price'].toString()}',
-                    style: TextStyle(color: Theme.of(context).primaryColorLight),
+                    style:
+                        TextStyle(color: Theme.of(context).primaryColorLight),
                   ),
                 ),
               ],
             ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.5),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 1.0),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Text('Rautatientori, Helsinki'),
           ),
           ButtonBar(alignment: MainAxisAlignment.center, children: <Widget>[
             FlatButton(
