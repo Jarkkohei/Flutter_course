@@ -78,7 +78,6 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           _buildPriceTextField(),
           SizedBox(height: 10.0),
           RaisedButton(
-              color: Theme.of(context).accentColor,
               textColor: Theme.of(context).primaryColorLight,
               child: Text('Save'),
               onPressed: _submitForm),
