@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './price_tag.dart';
 
 class Products extends StatelessWidget {
   final List<Map<String, dynamic>> products;
@@ -23,18 +24,7 @@ class Products extends StatelessWidget {
                       fontFamily: 'Oswald'),
                 ),
                 SizedBox(width: 8.0),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Text(
-                    '\$ ${products[index]['price'].toString()}',
-                    style:
-                        TextStyle(color: Theme.of(context).primaryColorLight),
-                  ),
-                ),
+                PriceTag(products[index]['price'].toString()),
               ],
             ),
           ),
