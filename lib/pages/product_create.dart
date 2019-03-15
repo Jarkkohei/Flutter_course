@@ -62,16 +62,28 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     Navigator.pushReplacementNamed(context, '/products');
   }
 
+  /* For debugging purposes only */
+  void _submitDefaultForm() {
+    final Map<String, dynamic> product = {
+      'title': 'Chocolate',
+      'description': 'Very tasty!',
+      'price': 12.0,
+      'image': 'assets/food.jpg'
+    };
+    widget.addProduct(product);
+    Navigator.pushReplacementNamed(context, '/products');
+  }
+
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
-    final double targetWidth = deviceWidth > 550.0 ? 500.0 :deviceWidth * 0.95;
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
     final double targetPadding = deviceWidth - targetWidth;
 
     return Container(
       margin: EdgeInsets.all(10.0),
       child: ListView(
-        padding:EdgeInsets.symmetric(horizontal:targetPadding / 2),
+        padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
         children: <Widget>[
           _buildTitleTextField(),
           _buildDescriptionTextField(),
@@ -81,6 +93,21 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               textColor: Theme.of(context).primaryColorLight,
               child: Text('Save'),
               onPressed: _submitForm),
+          /* For debuggin purposes only */
+          GestureDetector(
+            onLongPress: _submitDefaultForm,
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.only(top: 20.0),
+                color: Colors.green,
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  'Press long to add default product',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
