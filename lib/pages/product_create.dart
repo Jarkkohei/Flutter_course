@@ -15,11 +15,12 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   String _titleValue;
   String _descriptionValue;
   double _priceValue;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget _buildTitleTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: 'Product title'),
-      onChanged: (String value) {
+      onSaved: (String value) {
         setState(() {
           _titleValue = value;
         });
@@ -28,10 +29,10 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   Widget _buildDescriptionTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: 'Product description'),
       maxLines: 5,
-      onChanged: (String value) {
+      onSaved: (String value) {
         setState(() {
           _descriptionValue = value;
         });
@@ -40,10 +41,10 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   Widget _buildPriceTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(labelText: 'Product price'),
       keyboardType: TextInputType.number,
-      onChanged: (String value) {
+      onSaved: (String value) {
         setState(() {
           _priceValue = double.parse(value);
         });
@@ -52,22 +53,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   void _submitForm() {
+    _formKey.currentState.save();
     final Map<String, dynamic> product = {
       'title': _titleValue,
       'description': _descriptionValue,
       'price': _priceValue,
-      'image': 'assets/food.jpg'
-    };
-    widget.addProduct(product);
-    Navigator.pushReplacementNamed(context, '/products');
-  }
-
-  /* For debugging purposes only */
-  void _submitDefaultForm() {
-    final Map<String, dynamic> product = {
-      'title': 'Chocolate',
-      'description': 'Very tasty!',
-      'price': 12.0,
       'image': 'assets/food.jpg'
     };
     widget.addProduct(product);
@@ -82,33 +72,21 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
 
     return Container(
       margin: EdgeInsets.all(10.0),
-      child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
-        children: <Widget>[
-          _buildTitleTextField(),
-          _buildDescriptionTextField(),
-          _buildPriceTextField(),
-          SizedBox(height: 10.0),
-          RaisedButton(
-              textColor: Theme.of(context).primaryColorLight,
-              child: Text('Save'),
-              onPressed: _submitForm),
-          /* For debuggin purposes only */
-          GestureDetector(
-            onLongPress: _submitDefaultForm,
-            child: Center(
-              child: Container(
-                margin: EdgeInsets.only(top: 20.0),
-                color: Colors.green,
-                padding: EdgeInsets.all(15.0),
-                child: Text(
-                  'Press long to add default product',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-        ],
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
+          children: <Widget>[
+            _buildTitleTextField(),
+            _buildDescriptionTextField(),
+            _buildPriceTextField(),
+            SizedBox(height: 10.0),
+            RaisedButton(
+                textColor: Theme.of(context).primaryColorLight,
+                child: Text('Save'),
+                onPressed: _submitForm),
+          ],
+        ),
       ),
     );
   }
