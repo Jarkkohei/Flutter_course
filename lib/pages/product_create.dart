@@ -30,9 +30,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _titleValue = value;
-        });
+        _titleValue = value;
       },
     );
   }
@@ -47,9 +45,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _descriptionValue = value;
-        });
+         _descriptionValue = value;
       },
     );
   }
@@ -65,9 +61,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _priceValue = double.parse(value);
-        });
+        _priceValue = double.parse(value);
       },
     );
   }
