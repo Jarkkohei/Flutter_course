@@ -64,6 +64,7 @@ class ProductCard extends StatelessWidget {
           Image.asset(product.image),
           _buildTitlePriceRow(),
           AddressTag('Rautatientori, Helsinki'),
+          Text(product.userEmail),
           _buildActionButtons(context),
         ],
       ),

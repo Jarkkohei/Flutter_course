@@ -1,54 +1,61 @@
 import 'package:scoped_model/scoped_model.dart';
 import '../models/product.dart';
 
-mixin ProductsModel on Model {
-  List<Product> _products = [];
-  int _selectedProductIndex;
+import '../scoped-models/connected_products.dart';
+
+mixin ProductsModel on ConnectedProducts {
+  
+  
   bool _showFavorites = false;
 
   // Getter for the products list.
-  List<Product> get products {
+  List<Product> get allProducts {
     // Create new list not just a pointer.
-    return List.from(_products);
+    return List.from(products);
   }
 
   List<Product> get displayedProducts {
     if(_showFavorites == true) {
-      return _products.where((Product product) => product.isFavorite).toList();
+      return products.where((Product product) => product.isFavorite).toList();
     }
-    return List.from(_products);
+    return List.from(products);
   }
 
   int get selectedProductIndex {
-    return _selectedProductIndex;
+    return selProductIndex;
   }
 
   Product get selectedProduct {
-    if(_selectedProductIndex == null) {
+    if(selectedProductIndex == null) {
       return null;
     }
-    return _products[_selectedProductIndex];
+    return products[selectedProductIndex];
   }
 
   bool get displayFavoritesOnly {
     return _showFavorites;
   }
 
-  void addProduct(Product product) {
-    _products.add(product);
-    _selectedProductIndex = null;
-    notifyListeners();
-  }
+  
 
-  void updateProduct(Product product) {
-    _products[_selectedProductIndex] = product;
-    _selectedProductIndex = null;
+  void updateProduct(String title, String description, String image, double price) {
+    final Product updatedProduct = Product(
+      title: title, 
+      description: description, 
+      image: image, 
+      price: price,
+      userEmail: selectedProduct.userEmail,
+      userId: selectedProduct.userId,
+    );
+
+    products[selectedProductIndex] = updatedProduct;
+    selProductIndex = null;
     notifyListeners();
   }
 
   void deleteProduct() {
-    _products.removeAt(_selectedProductIndex);
-    _selectedProductIndex = null;
+    products.removeAt(selectedProductIndex);
+    selProductIndex = null;
     notifyListeners();
   }
 
@@ -61,17 +68,19 @@ mixin ProductsModel on Model {
       description: selectedProduct.description, 
       price: selectedProduct.price,
       image: selectedProduct.image,
-      isFavorite: newFavoriteStatus
+      userEmail: selectedProduct.userEmail,
+      userId: selectedProduct.userId,
+      isFavorite: newFavoriteStatus,
     );
     //_products[_selectedProductIndex] =updatedProduct;
     //_selectedProductIndex = null;
     //notifyListeners();
     updateProduct(updatedProduct);
-    _selectedProductIndex = null;
+    selProductIndex = null;
   }
 
   void selectProduct(int index) {
-    _selectedProductIndex = index;
+    selProductIndex = index;
     notifyListeners();
   }
 
