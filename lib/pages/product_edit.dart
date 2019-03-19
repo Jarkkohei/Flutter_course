@@ -80,7 +80,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         return RaisedButton(
           textColor: Theme.of(context).primaryColorLight,
           child: Text('Save'),
-          onPressed: () => _submitForm(model.addProduct, model.updateProduct, model.selectedProductIndex),
+          onPressed: () => _submitForm(model.addProduct, model.updateProduct, model.selectProduct, model.selectedProductIndex),
         );
       },
     );
@@ -114,10 +114,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  void _submitForm(Function addProduct, Function updateProduct, [int selectedProductIndex]) {
+  void _submitForm(Function addProduct, Function updateProduct, Function setSelectedProduct, [int selectedProductIndex]) {
     if (!_formKey.currentState.validate()) {
       return;
     }
+
     _formKey.currentState.save();
 
     if (selectedProductIndex == null) {
@@ -136,7 +137,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
       );
     }
 
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator.pushReplacementNamed(context, '/products').then((_) => setSelectedProduct(null));
   }
 
   @override
