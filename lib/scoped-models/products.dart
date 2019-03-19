@@ -15,6 +15,10 @@ class ProductsModel extends Model {
     return _selectedProductIndex;
   }
 
+  Product get selectedProduct {
+    return _products[_selectedProductIndex];
+  }
+
   void addProduct(Product product) {
     _products.add(product);
   }
