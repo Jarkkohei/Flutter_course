@@ -27,7 +27,7 @@ mixin ConnectedProductsModel on Model {
       'userId': _authenticatedUser.id,
     };
 
-    return http.post(firebaseProjectUrl,
+    return http.post(firebaseProjectUrl + '/products.json',
         body: json.encode(productData)).then((http.Response response) {
           final Map<String, dynamic> responseData = json.decode(response.body);
           final Product newProduct = Product(
@@ -104,7 +104,7 @@ mixin ProductsModel on ConnectedProductsModel {
   void fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    http.get(firebaseProjectUrl)
+    http.get(firebaseProjectUrl + '/products.json')
       .then((http.Response response) {
         final List<Product> fetchedProductList = [];
         final Map<String, dynamic> productListData = json.decode(response.body);
