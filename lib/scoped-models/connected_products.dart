@@ -94,6 +94,13 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
   }
 
+  void fetchProducts() {
+    http.get(firebaseProjectUrl)
+      .then((http.Response response) {
+        
+      });
+  }
+
   void toggleProductFavoriteStatus() {
     final bool isCurrentlyFavorite = selectedProduct.isFavorite;
     final newFavoriteStatus = !isCurrentlyFavorite;
