@@ -78,21 +78,34 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(
+  Future<Null>  updateProduct(
       String title, String description, String image, double price) {
-    final Product updatedProduct = Product(
-      id: selectedProduct.id,
-      title: title,
-      description: description,
-      image: image,
-      price: price,
-      userEmail: selectedProduct.userEmail,
-      userId: selectedProduct.userId,
-    );
-
-    _products[selectedProductIndex] = updatedProduct;
-    //_selProductIndex = null;
-    notifyListeners();
+        _isLoading = true;
+        notifyListeners();
+        final Map<String, dynamic> updateData = {
+          'title': title,
+          'description': description,
+          'image': 'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
+          'price': price,
+          'userEmail': _authenticatedUser.email,
+          'userId': _authenticatedUser.id,
+        };
+        return http.put(firebaseProjectUrl + '/products/${selectedProduct.id}.json', body: json.encode(updateData))
+          .then((http.Response response) {
+            _isLoading = false;
+            final Product updatedProduct = Product(
+              id: selectedProduct.id,
+              title: title,
+              description: description,
+              image: image,
+              price: price,
+              userEmail: selectedProduct.userEmail,
+              userId: selectedProduct.userId,
+            );
+            _products[selectedProductIndex] = updatedProduct;
+            //_selProductIndex = null;
+            notifyListeners();
+          });
   }
 
   void deleteProduct() {
