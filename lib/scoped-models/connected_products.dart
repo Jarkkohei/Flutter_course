@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/user.dart';
 import '../models/product.dart';
@@ -8,11 +11,23 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   int _selProductIndex;
 
-  void addProduct(String title, String description, String image, double price) {
+  void addProduct(
+      String title, String description, String image, double price) {
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
+      'price': price,
+    };
+
+    http.post('<YOUR_FIREBASE_PROJECT_URL_HERE>',
+        body: json.encode(productData));
+
     final Product newProduct = Product(
-      title: title, 
-      description: description, 
-      image: image, 
+      title: title,
+      description: description,
+      image: image,
       price: price,
       userEmail: _authenticatedUser.email,
       userId: _authenticatedUser.id,
@@ -24,7 +39,6 @@ mixin ConnectedProductsModel on Model {
 }
 
 mixin ProductsModel on ConnectedProductsModel {
-  
   bool _showFavorites = false;
 
   // Getter for the products list.
@@ -34,7 +48,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   List<Product> get displayedProducts {
-    if(_showFavorites == true) {
+    if (_showFavorites == true) {
       return _products.where((Product product) => product.isFavorite).toList();
     }
     return List.from(_products);
@@ -45,7 +59,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Product get selectedProduct {
-    if(selectedProductIndex == null) {
+    if (selectedProductIndex == null) {
       return null;
     }
     return _products[selectedProductIndex];
@@ -55,11 +69,12 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(String title, String description, String image, double price) {
+  void updateProduct(
+      String title, String description, String image, double price) {
     final Product updatedProduct = Product(
-      title: title, 
-      description: description, 
-      image: image, 
+      title: title,
+      description: description,
+      image: image,
       price: price,
       userEmail: selectedProduct.userEmail,
       userId: selectedProduct.userId,
@@ -81,8 +96,8 @@ mixin ProductsModel on ConnectedProductsModel {
     final newFavoriteStatus = !isCurrentlyFavorite;
 
     final Product updatedProduct = Product(
-      title: selectedProduct.title, 
-      description: selectedProduct.description, 
+      title: selectedProduct.title,
+      description: selectedProduct.description,
       price: selectedProduct.price,
       image: selectedProduct.image,
       userEmail: selectedProduct.userEmail,
@@ -109,11 +124,10 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-
   void login(String email, String password) {
     _authenticatedUser = User(
-      id: 'fdsgfdgfd', 
-      email: email, 
+      id: 'fdsgfdgfd',
+      email: email,
       password: password,
     );
   }
