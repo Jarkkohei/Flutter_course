@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +14,7 @@ mixin ConnectedProductsModel on Model {
   bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
   
-  void addProduct(
+  Future<Null> addProduct(
       String title, String description, String image, double price) {
         _isLoading = true;
         notifyListeners();
@@ -26,7 +27,7 @@ mixin ConnectedProductsModel on Model {
       'userId': _authenticatedUser.id,
     };
 
-    http.post(firebaseProjectUrl,
+    return http.post(firebaseProjectUrl,
         body: json.encode(productData)).then((http.Response response) {
           final Map<String, dynamic> responseData = json.decode(response.body);
           final Product newProduct = Product(
