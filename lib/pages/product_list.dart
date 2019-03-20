@@ -4,6 +4,10 @@ import './product_edit.dart';
 import '../scoped-models/main.dart';
 
 class ProductListPage extends StatefulWidget {
+  final MainModel model;
+
+  ProductListPage(this.model);
+
   @override
   State<StatefulWidget> createState() {
     return _ProductListPageState();
@@ -11,6 +15,12 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
+  @override
+  initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
+  
   Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
         icon: Icon(Icons.edit),
