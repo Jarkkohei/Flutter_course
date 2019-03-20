@@ -16,6 +16,7 @@ mixin ConnectedProductsModel on Model {
   void addProduct(
       String title, String description, String image, double price) {
         _isLoading = true;
+        notifyListeners();
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -101,6 +102,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void fetchProducts() {
     _isLoading = true;
+    notifyListeners();
     http.get(firebaseProjectUrl)
       .then((http.Response response) {
         final List<Product> fetchedProductList = [];
