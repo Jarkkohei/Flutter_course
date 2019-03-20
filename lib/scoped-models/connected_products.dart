@@ -81,7 +81,7 @@ mixin ProductsModel on ConnectedProductsModel {
   void updateProduct(
       String title, String description, String image, double price) {
     final Product updatedProduct = Product(
-      id: 'placeholderId',
+      id: selectedProduct.id,
       title: title,
       description: description,
       image: image,
