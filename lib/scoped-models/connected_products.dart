@@ -10,7 +10,7 @@ import '../models/product.dart';
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   User _authenticatedUser;
-  int _selProductIndex;
+  String _selProductId;
   bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
 
@@ -66,14 +66,22 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   int get selectedProductIndex {
-    return _selProductIndex;
+    return _products.indexWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  String get selectedProductId {
+    return _selProductId;
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    return _products.firstWhere((Product product) {
+      return product.id == _selProductId;
+    });
   }
 
   bool get displayFavoritesOnly {
@@ -107,6 +115,7 @@ mixin ProductsModel on ConnectedProductsModel {
         userEmail: selectedProduct.userEmail,
         userId: selectedProduct.userId,
       );
+
       _products[selectedProductIndex] = updatedProduct;
       //_selProductIndex = null;
       notifyListeners();
@@ -117,7 +126,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     final deletedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
-    _selProductIndex = null;
+    _selProductId = null;
     notifyListeners();
     http
         .delete(firebaseProjectUrl + '/products/$deletedProductId.json')
@@ -172,15 +181,13 @@ mixin ProductsModel on ConnectedProductsModel {
       userId: selectedProduct.userId,
       isFavorite: newFavoriteStatus,
     );
-    _products[_selProductIndex] = updatedProduct;
-    //_selProductIndex = null;
+    _products[selectedProductIndex] = updatedProduct;
     notifyListeners();
-    //_selProductIndex = null;
   }
 
-  void selectProduct(int index) {
-    _selProductIndex = index;
-    if (index != null) {
+  void selectProduct(String productId) {
+    _selProductId = productId;
+    if (productId != null) {
       notifyListeners();
     }
   }
