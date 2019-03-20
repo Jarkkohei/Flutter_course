@@ -100,7 +100,22 @@ mixin ProductsModel on ConnectedProductsModel {
   void fetchProducts() {
     http.get(firebaseProjectUrl)
       .then((http.Response response) {
-        
+        final List<Product> fetchedProductList = [];
+        final Map<String, dynamic> productListData = json.decode(response.body);
+        productListData.forEach((String productId, dynamic productData) {
+          final Product product = Product(
+            id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            image: productData['image'],
+            price: productData['price'],
+            userEmail: productData['userEmail'],
+            userId:productData['userId'],
+          );
+          fetchedProductList.add(product);
+        });
+        _products = fetchedProductList;
+        notifyListeners();
       });
   }
 
