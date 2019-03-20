@@ -134,6 +134,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
+      ).then((_) => Navigator
+        .pushReplacementNamed(context, '/products')
+        .then((_) => setSelectedProduct(null))
       );
     } else {
       updateProduct(
@@ -143,13 +146,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['price'],
       );
     }
-
-    Navigator.pushReplacementNamed(context, '/products').then((_) => setSelectedProduct(null));
   }
 
   @override
   Widget build(BuildContext context) {
-
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         final Widget pageContent =
@@ -160,8 +160,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 appBar: AppBar(
                   title: Text('Edit product'),
                 ),
-            body: pageContent
-          );
+                body: pageContent);
       },
     );
   }
