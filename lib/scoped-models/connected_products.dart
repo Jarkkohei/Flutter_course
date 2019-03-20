@@ -13,37 +13,39 @@ mixin ConnectedProductsModel on Model {
   int _selProductIndex;
   bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
-  
+
   Future<Null> addProduct(
       String title, String description, String image, double price) {
-        _isLoading = true;
-        notifyListeners();
+    _isLoading = true;
+    notifyListeners();
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
-      'image': 'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
+      'image':
+          'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
       'price': price,
       'userEmail': _authenticatedUser.email,
       'userId': _authenticatedUser.id,
     };
 
-    return http.post(firebaseProjectUrl + '/products.json',
-        body: json.encode(productData)).then((http.Response response) {
-          final Map<String, dynamic> responseData = json.decode(response.body);
-          final Product newProduct = Product(
-            id: responseData['name'],
-            title: title,
-            description: description,
-            image: image,
-            price: price,
-            userEmail: _authenticatedUser.email,
-            userId: _authenticatedUser.id,
-          );
-          _products.add(newProduct);
-          _isLoading = false;
-          notifyListeners();
-        }
+    return http
+        .post(firebaseProjectUrl + '/products.json',
+            body: json.encode(productData))
+        .then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+        id: responseData['name'],
+        title: title,
+        description: description,
+        image: image,
+        price: price,
+        userEmail: _authenticatedUser.email,
+        userId: _authenticatedUser.id,
       );
+      _products.add(newProduct);
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 }
 
@@ -78,34 +80,37 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  Future<Null>  updateProduct(
+  Future<Null> updateProduct(
       String title, String description, String image, double price) {
-        _isLoading = true;
-        notifyListeners();
-        final Map<String, dynamic> updateData = {
-          'title': title,
-          'description': description,
-          'image': 'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
-          'price': price,
-          'userEmail': _authenticatedUser.email,
-          'userId': _authenticatedUser.id,
-        };
-        return http.put(firebaseProjectUrl + '/products/${selectedProduct.id}.json', body: json.encode(updateData))
-          .then((http.Response response) {
-            _isLoading = false;
-            final Product updatedProduct = Product(
-              id: selectedProduct.id,
-              title: title,
-              description: description,
-              image: image,
-              price: price,
-              userEmail: selectedProduct.userEmail,
-              userId: selectedProduct.userId,
-            );
-            _products[selectedProductIndex] = updatedProduct;
-            //_selProductIndex = null;
-            notifyListeners();
-          });
+    _isLoading = true;
+    notifyListeners();
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
+      'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id,
+    };
+    return http
+        .put(firebaseProjectUrl + '/products/${selectedProduct.id}.json',
+            body: json.encode(updateData))
+        .then((http.Response response) {
+      _isLoading = false;
+      final Product updatedProduct = Product(
+        id: selectedProduct.id,
+        title: title,
+        description: description,
+        image: image,
+        price: price,
+        userEmail: selectedProduct.userEmail,
+        userId: selectedProduct.userId,
+      );
+      _products[selectedProductIndex] = updatedProduct;
+      //_selProductIndex = null;
+      notifyListeners();
+    });
   }
 
   void deleteProduct() {
@@ -117,31 +122,32 @@ mixin ProductsModel on ConnectedProductsModel {
   void fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    http.get(firebaseProjectUrl + '/products.json')
-      .then((http.Response response) {
-        final List<Product> fetchedProductList = [];
-        final Map<String, dynamic> productListData = json.decode(response.body);
-        if(productListData == null) {
-          _isLoading = false;
-          notifyListeners();
-          return;
-        }
-        productListData.forEach((String productId, dynamic productData) {
-          final Product product = Product(
-            id: productId,
-            title: productData['title'],
-            description: productData['description'],
-            image: productData['image'],
-            price: productData['price'],
-            userEmail: productData['userEmail'],
-            userId:productData['userId'],
-          );
-          fetchedProductList.add(product);
-        });
-        _products = fetchedProductList;
+    http
+        .get(firebaseProjectUrl + '/products.json')
+        .then((http.Response response) {
+      final List<Product> fetchedProductList = [];
+      final Map<String, dynamic> productListData = json.decode(response.body);
+      if (productListData == null) {
         _isLoading = false;
         notifyListeners();
+        return;
+      }
+      productListData.forEach((String productId, dynamic productData) {
+        final Product product = Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          image: productData['image'],
+          price: productData['price'],
+          userEmail: productData['userEmail'],
+          userId: productData['userId'],
+        );
+        fetchedProductList.add(product);
       });
+      _products = fetchedProductList;
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void toggleProductFavoriteStatus() {

@@ -117,7 +117,8 @@ class _AuthPageState extends State<AuthPage> {
                     _buildAcceptSwitch(),
                     SizedBox(height: 10.0),
                     ScopedModelDescendant<MainModel>(
-                      builder: (BuildContext context, Widget child, MainModel model) {
+                      builder: (BuildContext context, Widget child,
+                          MainModel model) {
                         return RaisedButton(
                           textColor: Theme.of(context).primaryColorLight,
                           child: Text('LOGIN'),

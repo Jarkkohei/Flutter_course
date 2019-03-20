@@ -20,7 +20,7 @@ class _ProductListPageState extends State<ProductListPage> {
     widget.model.fetchProducts();
     super.initState();
   }
-  
+
   Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
         icon: Icon(Icons.edit),
