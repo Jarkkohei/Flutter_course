@@ -25,7 +25,7 @@ mixin ConnectedProductsModel on Model {
 
     http.post(firebaseProjectUrl,
         body: json.encode(productData)).then((http.Response response) {
-          final Map<String, dynamic> responseData = json.decode(response.body)
+          final Map<String, dynamic> responseData = json.decode(response.body);
           final Product newProduct = Product(
             id: responseData['name'],
             title: title,
