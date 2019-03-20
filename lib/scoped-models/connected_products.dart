@@ -16,25 +16,27 @@ mixin ConnectedProductsModel on Model {
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
-      'image':
-          'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
+      'image': 'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
       'price': price,
     };
 
     http.post('<YOUR_FIREBASE_PROJECT_URL_HERE>',
-        body: json.encode(productData));
-
-    final Product newProduct = Product(
-      title: title,
-      description: description,
-      image: image,
-      price: price,
-      userEmail: _authenticatedUser.email,
-      userId: _authenticatedUser.id,
-    );
-    _products.add(newProduct);
-    //_selProductIndex = null;
-    notifyListeners();
+        body: json.encode(productData)).then((http.Response response) {
+          final Map<String, dynamic> responseData = json.decode(response.body)
+          final Product newProduct = Product(
+            id: responseData['name'],
+            title: title,
+            description: description,
+            image: image,
+            price: price,
+            userEmail: _authenticatedUser.email,
+            userId: _authenticatedUser.id,
+          );
+          _products.add(newProduct);
+          //_selProductIndex = null;
+          notifyListeners();
+        }
+      );
   }
 }
 
