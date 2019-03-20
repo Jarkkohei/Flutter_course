@@ -10,6 +10,7 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   User _authenticatedUser;
   int _selProductIndex;
+  final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
 
   void addProduct(
       String title, String description, String image, double price) {
@@ -20,7 +21,7 @@ mixin ConnectedProductsModel on Model {
       'price': price,
     };
 
-    http.post('<YOUR_FIREBASE_PROJECT_URL_HERE>',
+    http.post(firebaseProjectUrl,
         body: json.encode(productData)).then((http.Response response) {
           final Map<String, dynamic> responseData = json.decode(response.body)
           final Product newProduct = Product(
