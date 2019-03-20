@@ -127,10 +127,10 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void fetchProducts() {
+  Future<Null> fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    http
+    return http
         .get(firebaseProjectUrl + '/products.json')
         .then((http.Response response) {
       final List<Product> fetchedProductList = [];
