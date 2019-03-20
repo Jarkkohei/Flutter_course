@@ -10,10 +10,12 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   User _authenticatedUser;
   int _selProductIndex;
+  bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
-
+  
   void addProduct(
       String title, String description, String image, double price) {
+        _isLoading = true;
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -36,7 +38,7 @@ mixin ConnectedProductsModel on Model {
             userId: _authenticatedUser.id,
           );
           _products.add(newProduct);
-          //_selProductIndex = null;
+          _isLoading = false;
           notifyListeners();
         }
       );
@@ -98,6 +100,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void fetchProducts() {
+    _isLoading = true;
     http.get(firebaseProjectUrl)
       .then((http.Response response) {
         final List<Product> fetchedProductList = [];
@@ -115,6 +118,7 @@ mixin ProductsModel on ConnectedProductsModel {
           fetchedProductList.add(product);
         });
         _products = fetchedProductList;
+        _isLoading = false;
         notifyListeners();
       });
   }
@@ -159,5 +163,11 @@ mixin UserModel on ConnectedProductsModel {
       email: email,
       password: password,
     );
+  }
+}
+
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
+    return _isLoading;
   }
 }
