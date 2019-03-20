@@ -77,6 +77,7 @@ mixin ProductsModel on ConnectedProductsModel {
   void updateProduct(
       String title, String description, String image, double price) {
     final Product updatedProduct = Product(
+      id: 'placeholderId',
       title: title,
       description: description,
       image: image,
@@ -108,6 +109,7 @@ mixin ProductsModel on ConnectedProductsModel {
     final newFavoriteStatus = !isCurrentlyFavorite;
 
     final Product updatedProduct = Product(
+      id: selectedProduct.id,
       title: selectedProduct.title,
       description: selectedProduct.description,
       price: selectedProduct.price,
