@@ -19,6 +19,8 @@ mixin ConnectedProductsModel on Model {
       'description': description,
       'image': 'https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg?cs=srgb&dl=dessert-macro-sweets-65882.jpg&fm=jpg',
       'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id,
     };
 
     http.post(firebaseProjectUrl,
