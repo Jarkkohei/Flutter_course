@@ -14,7 +14,7 @@ mixin ConnectedProductsModel on Model {
   bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
 
-  Future<Null> addProduct(
+  Future<bool> addProduct(
       String title, String description, String image, double price) {
     _isLoading = true;
     notifyListeners();
@@ -32,6 +32,11 @@ mixin ConnectedProductsModel on Model {
         .post(firebaseProjectUrl + '/products.json',
             body: json.encode(productData))
         .then((http.Response response) {
+          if(response.statusCode != 200 && response.statusCode != 201) {
+            _isLoading = false;
+            notifyListeners();
+            return false;
+          }
       final Map<String, dynamic> responseData = json.decode(response.body);
       final Product newProduct = Product(
         id: responseData['name'],
@@ -45,6 +50,7 @@ mixin ConnectedProductsModel on Model {
       _products.add(newProduct);
       _isLoading = false;
       notifyListeners();
+      return true;
     });
   }
 }
