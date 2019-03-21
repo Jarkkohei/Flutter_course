@@ -15,7 +15,7 @@ mixin ConnectedProductsModel on Model {
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
 
   Future<bool> addProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, double price) async {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = {
@@ -28,34 +28,35 @@ mixin ConnectedProductsModel on Model {
       'userId': _authenticatedUser.id,
     };
 
-    return http
-        .post(firebaseProjectUrl + '/products.json',
-            body: json.encode(productData))
-        .then((http.Response response) {
-      if (response.statusCode != 200 && response.statusCode != 201) {
+    try{
+      final http.Response response = await http
+          .post(firebaseProjectUrl + '/products.json',
+              body: json.encode(productData));
+
+        if (response.statusCode != 200 && response.statusCode != 201) {
+          _isLoading = false;
+          notifyListeners();
+          return false;
+        }
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        final Product newProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: _authenticatedUser.email,
+          userId: _authenticatedUser.id,
+        );
+        _products.add(newProduct);
         _isLoading = false;
         notifyListeners();
-        return false;
-      }
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product newProduct = Product(
-        id: responseData['name'],
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: _authenticatedUser.email,
-        userId: _authenticatedUser.id,
-      );
-      _products.add(newProduct);
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    }).catchError((error) {
+        return true;
+    } catch(error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
   }
 }
 
