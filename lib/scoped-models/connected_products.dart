@@ -13,6 +13,46 @@ mixin ConnectedProductsModel on Model {
   String _selProductId;
   bool _isLoading = false;
   final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
+}
+
+mixin ProductsModel on ConnectedProductsModel {
+  bool _showFavorites = false;
+
+  // Getter for the products list.
+  List<Product> get allProducts {
+    // Create new list not just a pointer.
+    return List.from(_products);
+  }
+
+  List<Product> get displayedProducts {
+    if (_showFavorites == true) {
+      return _products.where((Product product) => product.isFavorite).toList();
+    }
+    return List.from(_products);
+  }
+
+  int get selectedProductIndex {
+    return _products.indexWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  String get selectedProductId {
+    return _selProductId;
+  }
+
+  Product get selectedProduct {
+    if (selectedProductId == null) {
+      return null;
+    }
+    return _products.firstWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+
+  bool get displayFavoritesOnly {
+    return _showFavorites;
+  }
 
   Future<bool> addProduct(
       String title, String description, String image, double price) async {
@@ -57,46 +97,6 @@ mixin ConnectedProductsModel on Model {
       notifyListeners();
       return false;
     }
-  }
-}
-
-mixin ProductsModel on ConnectedProductsModel {
-  bool _showFavorites = false;
-
-  // Getter for the products list.
-  List<Product> get allProducts {
-    // Create new list not just a pointer.
-    return List.from(_products);
-  }
-
-  List<Product> get displayedProducts {
-    if (_showFavorites == true) {
-      return _products.where((Product product) => product.isFavorite).toList();
-    }
-    return List.from(_products);
-  }
-
-  int get selectedProductIndex {
-    return _products.indexWhere((Product product) {
-      return product.id == _selProductId;
-    });
-  }
-
-  String get selectedProductId {
-    return _selProductId;
-  }
-
-  Product get selectedProduct {
-    if (selectedProductId == null) {
-      return null;
-    }
-    return _products.firstWhere((Product product) {
-      return product.id == _selProductId;
-    });
-  }
-
-  bool get displayFavoritesOnly {
-    return _showFavorites;
   }
 
   Future<bool> updateProduct(
