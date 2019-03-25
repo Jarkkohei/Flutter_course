@@ -70,31 +70,31 @@ mixin ProductsModel on ConnectedProductsModel {
       'userId': _authenticatedUser.id,
     };
 
-    try{
-      final http.Response response = await http
-          .post(firebaseProjectUrl + '/products.json',
-              body: json.encode(productData));
+    try {
+      final http.Response response = await http.post(
+          firebaseProjectUrl + '/products.json',
+          body: json.encode(productData));
 
-        if (response.statusCode != 200 && response.statusCode != 201) {
-          _isLoading = false;
-          notifyListeners();
-          return false;
-        }
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final Product newProduct = Product(
-          id: responseData['name'],
-          title: title,
-          description: description,
-          image: image,
-          price: price,
-          userEmail: _authenticatedUser.email,
-          userId: _authenticatedUser.id,
-        );
-        _products.add(newProduct);
+      if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
-        return true;
-    } catch(error) {
+        return false;
+      }
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+        id: responseData['name'],
+        title: title,
+        description: description,
+        image: image,
+        price: price,
+        userEmail: _authenticatedUser.email,
+        userId: _authenticatedUser.id,
+      );
+      _products.add(newProduct);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
