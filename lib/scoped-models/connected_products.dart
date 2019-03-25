@@ -12,7 +12,9 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   String _selProductId;
   bool _isLoading = false;
-  final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
+  final String firebaseProjectUrl =
+      '<YOUR_FIREBASE_PROJECT_URL_HERE>';
+  final String firebaseApiKey = '<YOUR_FIREBASE_API_KEY_HERE>';
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -232,6 +234,23 @@ mixin UserModel on ConnectedProductsModel {
       email: email,
       password: password,
     );
+  }
+
+  Future<Map<String, dynamic>> signup(String email, String password) async {
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+      'returnSecureToken': true,
+    };
+
+    final http.Response response = await http.post(
+      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' +
+          firebaseApiKey,
+      body: json.encode(authData),
+      headers: {'Content-Type': 'application/json'},
+    );
+    print(json.decode(response.body));
+    return {'success': true, 'message': 'Authentication succeeded!'};
   }
 }
 
