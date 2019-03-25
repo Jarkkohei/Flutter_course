@@ -12,8 +12,7 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   String _selProductId;
   bool _isLoading = false;
-  final String firebaseProjectUrl =
-      '<YOUR_FIREBASE_PROJECT_URL_HERE>';
+  final String firebaseProjectUrl = '<YOUR_FIREBASE_PROJECT_URL_HERE>';
   final String firebaseApiKey = '<YOUR_FIREBASE_API_KEY_HERE>';
 }
 
@@ -237,6 +236,9 @@ mixin UserModel on ConnectedProductsModel {
   }
 
   Future<Map<String, dynamic>> signup(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
     final Map<String, dynamic> authData = {
       'email': email,
       'password': password,
@@ -262,6 +264,10 @@ mixin UserModel on ConnectedProductsModel {
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
       message = 'This email already exists. Try logging in instead.';
     }
+
+    _isLoading = false;
+    notifyListeners();
+
     return {'success': !hasError, 'message': message};
   }
 }
