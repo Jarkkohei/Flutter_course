@@ -72,7 +72,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
     try {
       final http.Response response = await http.post(
-          firebaseProjectUrl + '/products.json',
+          firebaseProjectUrl + '/products.json?auth=${_authenticatedUser.token}',
           body: json.encode(productData));
 
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -115,7 +115,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'userId': _authenticatedUser.id,
     };
     return http
-        .put(firebaseProjectUrl + '/products/${selectedProduct.id}.json',
+        .put(firebaseProjectUrl + '/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
             body: json.encode(updateData))
         .then((http.Response response) {
       _isLoading = false;
@@ -147,7 +147,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _selProductId = null;
     notifyListeners();
     return http
-        .delete(firebaseProjectUrl + '/products/$deletedProductId.json')
+        .delete(firebaseProjectUrl + '/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
         .then((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -163,7 +163,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
     return http
-        .get(firebaseProjectUrl + '/products.json')
+        .get(firebaseProjectUrl + '/products.json?auth=${_authenticatedUser.token}')
         .then<Null>((http.Response response) {
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
@@ -266,6 +266,10 @@ mixin UserModel on ConnectedProductsModel {
     if (responseData.containsKey('idToken')) {
       hasError = false;
       message = 'Authentication succeeded!';
+      _authenticatedUser = User(
+          id: responseData['localId'],
+          email: email,
+          token: responseData['idToken']);
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
       message = 'This email already exists. Try logging in instead.';
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
