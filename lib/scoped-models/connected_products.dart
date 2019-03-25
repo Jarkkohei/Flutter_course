@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/user.dart';
 import '../models/product.dart';
+import '../models/auth.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
@@ -227,7 +228,8 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> authenticate(String email, String password,
+      [AuthMode mode = AuthMode.Login]) async {
     _isLoading = true;
     notifyListeners();
 
@@ -237,50 +239,23 @@ mixin UserModel on ConnectedProductsModel {
       'returnSecureToken': true,
     };
 
-    final http.Response response = await http.post(
-      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' +
-          firebaseApiKey,
-      body: json.encode(authData),
-      headers: {'Content-Type': 'application/json'},
-    );
+    http.Response response;
 
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    bool hasError = true;
-
-    String message = 'Something went wrong.';
-    print(responseData);
-
-    if (responseData.containsKey('idToken')) {
-      hasError = false;
-      message = 'Authentication succeeded!';
-    } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
-      message = 'Check your email and password.';
-    } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
-      message = 'Check your email and password.';
+    if (mode == AuthMode.Login) {
+      response = await http.post(
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' +
+            firebaseApiKey,
+        body: json.encode(authData),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } else {
+      response = await http.post(
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' +
+            firebaseApiKey,
+        body: json.encode(authData),
+        headers: {'Content-Type': 'application/json'},
+      );
     }
-
-    _isLoading = false;
-    notifyListeners();
-
-    return {'success': !hasError, 'message': message};
-  }
-
-  Future<Map<String, dynamic>> signup(String email, String password) async {
-    _isLoading = true;
-    notifyListeners();
-
-    final Map<String, dynamic> authData = {
-      'email': email,
-      'password': password,
-      'returnSecureToken': true,
-    };
-
-    final http.Response response = await http.post(
-      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=' +
-          firebaseApiKey,
-      body: json.encode(authData),
-      headers: {'Content-Type': 'application/json'},
-    );
 
     final Map<String, dynamic> responseData = json.decode(response.body);
     bool hasError = true;
@@ -293,6 +268,10 @@ mixin UserModel on ConnectedProductsModel {
       message = 'Authentication succeeded!';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
       message = 'This email already exists. Try logging in instead.';
+    } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
+      message = 'Check your email and password.';
+    } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
+      message = 'Check your email and password.';
     }
 
     _isLoading = false;
