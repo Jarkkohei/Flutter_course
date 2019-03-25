@@ -79,9 +79,6 @@ class _AuthPageState extends State<AuthPage> {
           return 'Passwords do not match!';
         }
       },
-      onSaved: (String value) {
-        _formData['email'] = value;
-      },
     );
   }
 
@@ -101,13 +98,21 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _submitForm(Function login) {
+  void _submitForm(Function login, Function signup) async {
     if (!_formKey.currentState.validate() || !_formData['termsAccepted']) {
       return;
     }
     _formKey.currentState.save();
-    login(_formData['email'], _formData['password']);
-    Navigator.pushReplacementNamed(context, '/products');
+
+    if (_authMode == AuthMode.Login) {
+      login(_formData['email'], _formData['password']);
+    } else {
+      final Map<String, dynamic> successInformation =
+          await signup(_formData['email'], _formData['password']);
+      if (successInformation['success']) {
+        Navigator.pushReplacementNamed(context, '/products');
+      }
+    }
   }
 
   @override
@@ -136,7 +141,9 @@ class _AuthPageState extends State<AuthPage> {
                     SizedBox(height: 10.0),
                     _buildPasswordTextField(),
                     SizedBox(height: 10.0),
-                    _authMode == AuthMode.Signup ?_buildPasswordConfirmTextField() : Container(),
+                    _authMode == AuthMode.Signup
+                        ? _buildPasswordConfirmTextField()
+                        : Container(),
                     _buildAcceptSwitch(),
                     SizedBox(height: 10.0),
                     FlatButton(
@@ -157,7 +164,8 @@ class _AuthPageState extends State<AuthPage> {
                         return RaisedButton(
                           textColor: Theme.of(context).primaryColorLight,
                           child: Text('LOGIN'),
-                          onPressed: () => _submitForm(model.login),
+                          onPressed: () =>
+                              _submitForm(model.login, model.signup),
                         );
                       },
                     ),
