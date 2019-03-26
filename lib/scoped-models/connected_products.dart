@@ -234,7 +234,6 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-
   User get user {
     return _authenticatedUser;
   }
@@ -308,6 +307,14 @@ mixin UserModel on ConnectedProductsModel {
       _authenticatedUser = User(id: userId, email: userEmail, token: token);
       notifyListeners();
     }
+  }
+
+  void logout() async {
+    _authenticatedUser = null;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userId');
+    prefs.remove('userEmail');
+    prefs.remove('token');
   }
 }
 
