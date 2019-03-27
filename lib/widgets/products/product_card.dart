@@ -41,7 +41,7 @@ class ProductCard extends StatelessWidget {
                 ),
           ),
           IconButton(
-            icon: Icon(model.allProducts[productIndex].isFavorite
+            icon: Icon(product.isFavorite
                 ? Icons.favorite
                 : Icons.favorite_border),
             color: Colors.red,

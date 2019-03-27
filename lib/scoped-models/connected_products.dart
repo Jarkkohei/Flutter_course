@@ -181,26 +181,26 @@ mixin ProductsModel on ConnectedProductsModel {
       }
       productListData.forEach((String productId, dynamic productData) {
         final Product product = Product(
-          id: productId,
-          title: productData['title'],
-          description: productData['description'],
-          image: productData['image'],
-          price: productData['price'],
-          userEmail: productData['userEmail'],
-          userId: productData['userId'],
-        );
+            id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            image: productData['image'],
+            price: productData['price'],
+            userEmail: productData['userEmail'],
+            userId: productData['userId'],
+            isFavorite: productData['wishlistUsers'] == null ? false : (productData['wishlistUsers'] as Map<String, dynamic>)
+                .containsKey(_authenticatedUser.id));
         fetchedProductList.add(product);
       });
       _products = fetchedProductList;
       _isLoading = false;
       notifyListeners();
       _selProductId = null;
-    })
-          ..catchError((error) {
-            _isLoading = false;
-            notifyListeners();
-            return false;
-          });
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    });
   }
 
   void toggleProductFavoriteStatus() async {
